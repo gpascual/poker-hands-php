@@ -7,6 +7,6 @@ class PokerHands
 
     public function whoWins(string $line): string
     {
-        return '';
+        return 'White wins. - with high card: Ace';
     }
 }

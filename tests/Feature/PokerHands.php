@@ -16,7 +16,6 @@ describe(
 
                 while ($line = fgets($input)) {
                     $result[] = $this->pokerHands->whoWins($line);
-
                 }
 
                 expect(implode("\n", $result))->toBe(file_get_contents(__DIR__ . '/sampleOutput.txt'));
