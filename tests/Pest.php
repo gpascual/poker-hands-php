@@ -2,4 +2,4 @@
 
 use PokerHands\Tests\FeatureTestCase;
 
-uses(FeatureTestCase::class)->in('Feature');
+uses(FeatureTestCase::class)->in('Feature', 'Unit');

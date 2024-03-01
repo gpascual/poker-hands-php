@@ -5,10 +5,6 @@ use PokerHands\PokerHands;
 describe(
     'PokerHands',
     function () {
-        beforeEach(function () {
-            $this->pokerHands = new PokerHands();
-        });
-
         it (
             'should tell which hand wins',
             function () {
