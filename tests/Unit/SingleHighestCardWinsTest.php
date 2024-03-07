@@ -18,6 +18,10 @@ describe(
             [
                 'Black wins. - with high card: King',
                 'Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C QH',
+            ],
+            [
+                'Black wins. - with high card: 9',
+                'Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C KH',
             ]
         ]);
     }
