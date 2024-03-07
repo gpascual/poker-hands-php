@@ -15,7 +15,10 @@ class PokerHands
 
         $comparator = composeComparators(
             $this->compareCardsAt(0),
-            $this->compareCardsAt(1)
+            $this->compareCardsAt(1),
+            $this->compareCardsAt(2),
+            $this->compareCardsAt(3),
+            $this->compareCardsAt(4)
         );
 
         $cardComparison = $comparator(...array_values($hands));
@@ -30,7 +33,7 @@ class PokerHands
                 $players[1],
                 $hands[$players[1]]->cardAt($this->position)
             ),
-            default => ''
+            default => 'Tie.'
         };
     }
 
