@@ -8,6 +8,7 @@ describe(
             function () {
                 $input = fopen(__DIR__ . '/sampleInput.txt', 'rb');
 
+                $result = [];
                 while ($line = fgets($input)) {
                     $result[] = $this->pokerHands->whoWins($line);
                 }

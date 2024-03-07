@@ -19,7 +19,7 @@ class PokerHands
         $players = array_keys($hands);
         $highestCards = array_values($highestCards);
 
-        $cardComparison = $highestCards[1][0] - $highestCards[0][0];
+        $cardComparison = $highestCards[1]->figure->value - $highestCards[0]->figure->value;
 
         return match (true) {
             0 > $cardComparison => $this->composeWinningPlayerResponse($players[0], $highestCards[0]),
@@ -28,19 +28,19 @@ class PokerHands
         };
     }
 
-    private function cardFigure(int $figure): string
+    private function cardFigure(Figure $figure): string
     {
         return match ($figure) {
-            10 => 'Jack',
-            11 => 'Queen',
-            12 => 'King',
-            13 => 'Ace',
+            Figure::Jack => 'Jack',
+            Figure::Queen => 'Queen',
+            Figure::King => 'King',
+            Figure::Ace => 'Ace',
             default => $figure
         };
     }
 
-    public function composeWinningPlayerResponse(string $player, $highestCard): string
+    public function composeWinningPlayerResponse(string $player, Card $highestCard): string
     {
-        return "{$player} wins. - with high card: {$this->cardFigure($highestCard[0])}";
+        return "$player wins. - with high card: {$this->cardFigure($highestCard->figure)}";
     }
 }

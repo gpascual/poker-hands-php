@@ -13,13 +13,13 @@ class Hand
     {
         usort(
             $cards,
-            static fn ($cardA, $cardB) => $cardB[0] - $cardA[0]
+            static fn (Card $cardA, Card $cardB) => $cardB->figure->value - $cardA->figure->value
         );
 
         $this->cards = $cards;
     }
 
-    public function cardAt(int $position): array
+    public function cardAt(int $position): Card
     {
         return $this->cards[$position];
     }

@@ -19,16 +19,16 @@ class HandParser
             [$player, $cardsInput] = explode(': ', $handInput);
             $hands[$player] = new Hand(
                 ...map(
-                    fn(string $cardString) => ([
+                    fn(string $cardString) => new Card(
                         match ($cardString[0]) {
-                            'J' => 10,
-                            'Q' => 11,
-                            'K' => 12,
-                            'A' => 13,
-                            default => (int)$cardString[0]
+                            'J' => Figure::Jack,
+                            'Q' => Figure::Queen,
+                            'K' => Figure::King,
+                            'A' => Figure::Ace,
+                            default => Figure::from($cardString[0])
                         },
-                        $cardString[1]
-                    ]),
+                        Suit::from($cardString[1])
+                    ),
                     explode(' ', $cardsInput)
                 )
             );

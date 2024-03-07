@@ -1,7 +1,5 @@
 <?php
 
-use PokerHands\PokerHands;
-
 describe(
     'given hands with single cards only',
     function () {
