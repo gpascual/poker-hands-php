@@ -1,11 +1,9 @@
 <?php
 
-use PokerHands\PokerHands;
-
 describe(
     'PokerHands',
     function () {
-        it (
+        it(
             'should tell which hand wins',
             function () {
                 $input = fopen(__DIR__ . '/sampleInput.txt', 'rb');

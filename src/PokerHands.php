@@ -11,20 +11,15 @@ class PokerHands
         $handParser = new HandParser();
         $hands = $handParser->parseHandsInput($line);
 
-        $cardNumbers = map(
-            fn($cards) => map(fn($card) => $card[0], $cards),
-            $hands
-        );
-
         $highestCards = map(
-            fn ($cardNumbers) => max($cardNumbers),
-            $cardNumbers
+            fn (Hand $hand) => $hand->cardAt(0),
+            $hands
         );
 
         $players = array_keys($hands);
         $highestCards = array_values($highestCards);
 
-        $cardComparison = $highestCards[1] - $highestCards[0];
+        $cardComparison = $highestCards[1][0] - $highestCards[0][0];
 
         return match (true) {
             0 > $cardComparison => $this->composeWinningPlayerResponse($players[0], $highestCards[0]),
@@ -44,8 +39,8 @@ class PokerHands
         };
     }
 
-    public function composeWinningPlayerResponse(string $player, int $highestFigure): string
+    public function composeWinningPlayerResponse(string $player, $highestCard): string
     {
-        return "{$player} wins. - with high card: {$this->cardFigure($highestFigure)}";
+        return "{$player} wins. - with high card: {$this->cardFigure($highestCard[0])}";
     }
 }
