@@ -11,19 +11,18 @@ class PokerHands
         $handParser = new HandParser();
         $hands = $handParser->parseHandsInput($line);
 
-        $highestCards = map(
-            fn (Hand $hand) => $hand->cardAt(0),
-            $hands
-        );
+        $position = 0;
+        $cardComparison = $this->compareCardsAt($hands, $position);
+
+        if (!$cardComparison) {
+            $position = 1;
+            $cardComparison = $this->compareCardsAt($hands, $position);
+        }
 
         $players = array_keys($hands);
-        $highestCards = array_values($highestCards);
-
-        $cardComparison = $highestCards[1]->figure->value - $highestCards[0]->figure->value;
-
         return match (true) {
-            0 > $cardComparison => $this->composeWinningPlayerResponse($players[0], $highestCards[0]),
-            0 < $cardComparison => $this->composeWinningPlayerResponse($players[1], $highestCards[1]),
+            0 > $cardComparison => $this->composeWinningPlayerResponse($players[0], $hands[$players[0]]->cardAt($position)),
+            0 < $cardComparison => $this->composeWinningPlayerResponse($players[1], $hands[$players[1]]->cardAt($position)),
             default => ''
         };
     }
@@ -35,12 +34,27 @@ class PokerHands
             Figure::Queen => 'Queen',
             Figure::King => 'King',
             Figure::Ace => 'Ace',
-            default => $figure
+            default => $figure->value
         };
     }
 
     public function composeWinningPlayerResponse(string $player, Card $highestCard): string
     {
         return "$player wins. - with high card: {$this->cardFigure($highestCard->figure)}";
+    }
+
+    /**
+     * @param Hand[] $hands
+     * @param int $position
+     * @return int
+     */
+    public function compareCardsAt(array $hands, int $position): int
+    {
+        $cardsAt = array_values(map(
+            fn(Hand $hand) => $hand->cardAt($position),
+            $hands
+        ));
+
+        return $cardsAt[1]->figure->value - $cardsAt[0]->figure->value;
     }
 }
