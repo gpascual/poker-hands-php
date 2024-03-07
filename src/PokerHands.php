@@ -2,27 +2,34 @@
 
 namespace PokerHands;
 
-use function Lambdish\Phunctional\map;
+use function PokerHands\Functional\composeComparators;
 
 class PokerHands
 {
+    private int $position;
+
     public function whoWins(string $line): string
     {
         $handParser = new HandParser();
         $hands = $handParser->parseHandsInput($line);
 
-        $position = 0;
-        $cardComparison = $this->compareCardsAt($hands, $position);
+        $comparator = composeComparators(
+            $this->compareCardsAt(0),
+            $this->compareCardsAt(1)
+        );
 
-        if (!$cardComparison) {
-            $position = 1;
-            $cardComparison = $this->compareCardsAt($hands, $position);
-        }
+        $cardComparison = $comparator(...array_values($hands));
 
         $players = array_keys($hands);
         return match (true) {
-            0 > $cardComparison => $this->composeWinningPlayerResponse($players[0], $hands[$players[0]]->cardAt($position)),
-            0 < $cardComparison => $this->composeWinningPlayerResponse($players[1], $hands[$players[1]]->cardAt($position)),
+            0 > $cardComparison => $this->composeWinningPlayerResponse(
+                $players[0],
+                $hands[$players[0]]->cardAt($this->position)
+            ),
+            0 < $cardComparison => $this->composeWinningPlayerResponse(
+                $players[1],
+                $hands[$players[1]]->cardAt($this->position)
+            ),
             default => ''
         };
     }
@@ -43,18 +50,14 @@ class PokerHands
         return "$player wins. - with high card: {$this->cardFigure($highestCard->figure)}";
     }
 
-    /**
-     * @param Hand[] $hands
-     * @param int $position
-     * @return int
-     */
-    public function compareCardsAt(array $hands, int $position): int
+    public function compareCardsAt(int $position): callable
     {
-        $cardsAt = array_values(map(
-            fn(Hand $hand) => $hand->cardAt($position),
-            $hands
-        ));
-
-        return $cardsAt[1]->figure->value - $cardsAt[0]->figure->value;
+        return function (Hand $handA, Hand $handB) use ($position) {
+            $comparison = $handB->cardAt($position)->figure->value - $handA->cardAt($position)->figure->value;
+            if (0 !== $comparison) {
+                $this->position = $position;
+            }
+            return $comparison;
+        };
     }
 }
