@@ -70,6 +70,11 @@ class PokerHands
             $pairA = $handA->figureAt(HandRank::Pair, $position);
             $pairB = $handB->figureAt(HandRank::Pair, $position);
 
+            if ($pairA && null === $pairB) {
+                $this->registerWinner($handA, $pairA);
+                return -1;
+            }
+
             if ($pairB && null === $pairA) {
                 $this->registerWinner($handB, $pairB);
                 return 1;
