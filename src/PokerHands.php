@@ -2,17 +2,17 @@
 
 namespace PokerHands;
 
-use function Lambdish\Phunctional\sort as phunctionalSort;
+use function Lambdish\Phunctional\sort;
 use function PokerHands\Functional\composeComparators;
 
 class PokerHands
 {
-    private ?Card $winningCard = null;
+    private ?Figure $winningFigure = null;
     private ?Hand $winningHand = null;
 
     public function whoWins(string $line): string
     {
-        phunctionalSort(
+        sort(
             composeComparators(
                 $this->comparePairsAt(0),
                 $this->compareCardsAt(0),
@@ -29,7 +29,7 @@ class PokerHands
         }
         return $this->composeWinningPlayerResponse(
             $this->winningHand->playerName,
-            $this->winningCard
+            $this->winningFigure
         );
     }
 
@@ -44,21 +44,21 @@ class PokerHands
         };
     }
 
-    public function composeWinningPlayerResponse(string $player, Card $highestCard): string
+    public function composeWinningPlayerResponse(string $player, Figure $highestFigure): string
     {
-        return "{$player} wins. - with high card: {$this->cardFigure($highestCard->figure)}";
+        return "$player wins. - with high card: {$this->cardFigure($highestFigure)}";
     }
 
     public function compareCardsAt(int $position): callable
     {
         return function (Hand $handA, Hand $handB) use ($position) {
-            $comparison = $handB->cardAt($position)->figure->value - $handA->cardAt($position)->figure->value;
+            $comparison = $handB->figureAt(HandRank::Card, $position)->value <=> $handA->figureAt(HandRank::Card, $position)->value;
             if (0 !== $comparison) {
                 $winningHand = match (true) {
                     0 > $comparison => $handA,
                     0 < $comparison => $handB,
                 };
-                $this->registerWinner($winningHand, $winningHand->cardAt($position));
+                $this->registerWinner($winningHand, $winningHand->figureAt(HandRank::Card, $position));
             }
             return $comparison;
         };
@@ -67,8 +67,8 @@ class PokerHands
     public function comparePairsAt(int $position): callable
     {
         return function (Hand $handA, Hand $handB) use ($position) {
-            $pairA = $handA->pairAt($position);
-            $pairB = $handB->pairAt($position);
+            $pairA = $handA->figureAt(HandRank::Pair, $position);
+            $pairB = $handB->figureAt(HandRank::Pair, $position);
 
             if ($pairB && null === $pairA) {
                 $this->registerWinner($handB, $pairB);
@@ -79,9 +79,9 @@ class PokerHands
         };
     }
 
-    public function registerWinner(Hand $winningHand, Card $winningCard): void
+    public function registerWinner(Hand $winningHand, Figure $winningFigure): void
     {
         $this->winningHand = $winningHand;
-        $this->winningCard = $winningCard;
+        $this->winningFigure = $winningFigure;
     }
 }
