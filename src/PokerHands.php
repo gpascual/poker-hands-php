@@ -80,7 +80,15 @@ class PokerHands
                 return 1;
             }
 
-            return 0;
+            $comparison = $pairB->value <=> $pairA->value;
+            if (0 !== $comparison) {
+                $winningHand = match (true) {
+                    0 > $comparison => $handA,
+                    0 < $comparison => $handB,
+                };
+                $this->registerWinner($winningHand, $winningHand->figureAt(HandRank::Pair, $position));
+            }
+            return $comparison;
         };
     }
 
