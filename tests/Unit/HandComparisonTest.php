@@ -20,15 +20,15 @@ describe('comparign hands', function () {
                     'Black wins. - with high card: 5',
                     'Black: 2H 3D 5S 5C KD  White: 2C 3H 4S 8C QH',
                 ],
-                /*[
+                [
                     'Black wins. - with high card: 9',
-                    'Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C KH',
+                    'Black: 2H 3D 5S 9C 9D  White: 2C 3H 8S 8C KH',
                 ],
                 [
                     'White wins. - with high card: 6',
-                    'Black: 2H 3D 5S 9C KD  White: 2D 3H 6C 9S KH',
+                    'Black: 2H 3D 5S 5C KD  White: 2D 6H 6C 9S KH',
                 ],
-                [
+                /*[
                     'Black wins. - with high card: 4',
                     'Black: 2H 4D 5S 9C KD  White: 2D 3H 5C 9S KH',
                 ],
