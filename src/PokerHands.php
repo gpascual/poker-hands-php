@@ -14,6 +14,7 @@ class PokerHands
     {
         phunctionalSort(
             composeComparators(
+                $this->comparePairsAt(0),
                 $this->compareCardsAt(0),
                 $this->compareCardsAt(1),
                 $this->compareCardsAt(2),
@@ -60,6 +61,21 @@ class PokerHands
                 $this->registerWinner($winningHand, $winningHand->cardAt($position));
             }
             return $comparison;
+        };
+    }
+
+    public function comparePairsAt(int $position): callable
+    {
+        return function (Hand $handA, Hand $handB) use ($position) {
+            $pairA = $handA->pairAt($position);
+            $pairB = $handB->pairAt($position);
+
+            if ($pairB && null === $pairA) {
+                $this->registerWinner($handB, $pairB);
+                return 1;
+            }
+
+            return 0;
         };
     }
 
