@@ -13,33 +13,21 @@ describe('comparign hands', function () {
                 }
             )->with([
                 [
-                    'White wins. - with high card: 8',
+                    'White wins. - with pair: 8',
                     'Black: 2H 3D 5S 9C AD  White: 2C 3H 8S 8C KH',
                 ],
                 [
-                    'Black wins. - with high card: 5',
+                    'Black wins. - with pair: 5',
                     'Black: 2H 3D 5S 5C KD  White: 2C 3H 4S 8C QH',
                 ],
                 [
-                    'Black wins. - with high card: 9',
+                    'Black wins. - with pair: 9',
                     'Black: 2H 3D 5S 9C 9D  White: 2C 3H 8S 8C KH',
                 ],
                 [
-                    'White wins. - with high card: 6',
+                    'White wins. - with pair: 6',
                     'Black: 2H 3D 5S 5C KD  White: 2D 6H 6C 9S KH',
                 ],
-                /*[
-                    'Black wins. - with high card: 4',
-                    'Black: 2H 4D 5S 9C KD  White: 2D 3H 5C 9S KH',
-                ],
-                [
-                    'White wins. - with high card: 3',
-                    'Black: 2H 4D 5S 9C KD  White: 3D 4H 5C 9S KH',
-                ],
-                [
-                    'Tie.',
-                    'Black: 2H 4D 5S 9C KD  White: 2D 4H 5C 9S KH',
-                ]*/
             ]);
         }
     );

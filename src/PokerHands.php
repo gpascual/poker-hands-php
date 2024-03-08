@@ -9,6 +9,7 @@ class PokerHands
 {
     private ?Figure $winningFigure = null;
     private ?Hand $winningHand = null;
+    private ?HandRank $winningRank = null;
 
     public function whoWins(string $line): string
     {
@@ -32,45 +33,31 @@ class PokerHands
         }
         return $this->composeWinningPlayerResponse(
             $this->winningHand->playerName,
+            $this->winningRank,
             $this->winningFigure
         );
     }
 
-    private function cardFigure(Figure $figure): string
-    {
-        return match ($figure) {
-            Figure::Jack => 'Jack',
-            Figure::Queen => 'Queen',
-            Figure::King => 'King',
-            Figure::Ace => 'Ace',
-            default => $figure->value
-        };
-    }
-
-    public function composeWinningPlayerResponse(string $player, Figure $highestFigure): string
-    {
-        return "$player wins. - with high card: {$this->cardFigure($highestFigure)}";
-    }
-
-    public function registerWinner(Hand $winningHand, Figure $winningFigure): void
+    public function registerWinner(Hand $winningHand, HandRank $winningRank, Figure $winningFigure): void
     {
         $this->winningHand = $winningHand;
+        $this->winningRank = $winningRank;
         $this->winningFigure = $winningFigure;
     }
 
-    private function compareRanksAt(HandRank $handRank, int $position): \Closure
+    private function compareRanksAt(HandRank $handRank, int $position): callable
     {
         return function (Hand $handA, Hand $handB) use ($handRank, $position) {
             $pairA = $handA->figureAt($handRank, $position);
             $pairB = $handB->figureAt($handRank, $position);
 
             if ($pairA && null === $pairB) {
-                $this->registerWinner($handA, $pairA);
+                $this->registerWinner($handA, $handRank, $pairA);
                 return -1;
             }
 
             if ($pairB && null === $pairA) {
-                $this->registerWinner($handB, $pairB);
+                $this->registerWinner($handB, $handRank, $pairB);
                 return 1;
             }
 
@@ -78,7 +65,7 @@ class PokerHands
         };
     }
 
-    private function compareRankFiguresAt(HandRank $handRank, int $position): \Closure
+    private function compareRankFiguresAt(HandRank $handRank, int $position): callable
     {
         return function (Hand $handA, Hand $handB) use ($handRank, $position) {
             $pairA = $handA->figureAt($handRank, $position);
@@ -90,9 +77,38 @@ class PokerHands
                     0 > $comparison => $handA,
                     0 < $comparison => $handB,
                 };
-                $this->registerWinner($winningHand, $winningHand->figureAt($handRank, $position));
+                $this->registerWinner(
+                    $winningHand,
+                    $handRank,
+                    $winningHand->figureAt($handRank, $position)
+                );
             }
             return $comparison;
+        };
+    }
+
+    public function composeWinningPlayerResponse(string $player, HandRank $highestRank, Figure $highestFigure): string
+    {
+
+        return "$player wins. - with {$this->cardRank($highestRank)}: {$this->cardFigure($highestFigure)}";
+    }
+
+    public function cardRank(HandRank $handRank): string
+    {
+        return match ($handRank) {
+            HandRank::Pair => 'pair',
+            default => "high card"
+        };
+    }
+
+    private function cardFigure(Figure $figure): string
+    {
+        return match ($figure) {
+            Figure::Jack => 'Jack',
+            Figure::Queen => 'Queen',
+            Figure::King => 'King',
+            Figure::Ace => 'Ace',
+            default => $figure->value
         };
     }
 }
