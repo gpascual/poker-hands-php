@@ -9,7 +9,7 @@ class Hand
     /**
      * @param array $cards
      */
-    public function __construct(...$cards)
+    public function __construct(public readonly string $playerName, ...$cards)
     {
         usort(
             $cards,

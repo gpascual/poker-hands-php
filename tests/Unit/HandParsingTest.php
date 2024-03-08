@@ -19,14 +19,16 @@ describe(
                 );
 
                 expect($result)->toEqual([
-                    'Black' => new Hand(
+                    new Hand(
+                        'Black',
                         new Card(Figure::from(2), Suit::from('H')),
                         new Card(Figure::from(3), Suit::from('D')),
                         new Card(Figure::from(5), Suit::from('S')),
                         new Card(Figure::from(9), Suit::from('C')),
                         new Card(Figure::from(12), Suit::from('D')),
                     ),
-                    'White' => new Hand(
+                    new Hand(
+                        'White',
                         new Card(Figure::from(2), Suit::from('C')),
                         new Card(Figure::from(3), Suit::from('H')),
                         new Card(Figure::from(4), Suit::from('S')),

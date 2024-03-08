@@ -2,39 +2,34 @@
 
 namespace PokerHands;
 
+use function Lambdish\Phunctional\sort as phunctionalSort;
 use function PokerHands\Functional\composeComparators;
 
 class PokerHands
 {
-    private int $position;
+    private ?Card $winningCard = null;
+    private ?Hand $winningHand = null;
 
     public function whoWins(string $line): string
     {
-        $handParser = new HandParser();
-        $hands = $handParser->parseHandsInput($line);
-
-        $comparator = composeComparators(
-            $this->compareCardsAt(0),
-            $this->compareCardsAt(1),
-            $this->compareCardsAt(2),
-            $this->compareCardsAt(3),
-            $this->compareCardsAt(4)
+        phunctionalSort(
+            composeComparators(
+                $this->compareCardsAt(0),
+                $this->compareCardsAt(1),
+                $this->compareCardsAt(2),
+                $this->compareCardsAt(3),
+                $this->compareCardsAt(4)
+            ),
+            (new HandParser())->parseHandsInput($line)
         );
 
-        $cardComparison = $comparator(...array_values($hands));
-
-        $players = array_keys($hands);
-        return match (true) {
-            0 > $cardComparison => $this->composeWinningPlayerResponse(
-                $players[0],
-                $hands[$players[0]]->cardAt($this->position)
-            ),
-            0 < $cardComparison => $this->composeWinningPlayerResponse(
-                $players[1],
-                $hands[$players[1]]->cardAt($this->position)
-            ),
-            default => 'Tie.'
-        };
+        if (null === $this->winningHand) {
+            return 'Tie.';
+        }
+        return $this->composeWinningPlayerResponse(
+            $this->winningHand->playerName,
+            $this->winningCard
+        );
     }
 
     private function cardFigure(Figure $figure): string
@@ -50,7 +45,7 @@ class PokerHands
 
     public function composeWinningPlayerResponse(string $player, Card $highestCard): string
     {
-        return "$player wins. - with high card: {$this->cardFigure($highestCard->figure)}";
+        return "{$player} wins. - with high card: {$this->cardFigure($highestCard->figure)}";
     }
 
     public function compareCardsAt(int $position): callable
@@ -58,9 +53,19 @@ class PokerHands
         return function (Hand $handA, Hand $handB) use ($position) {
             $comparison = $handB->cardAt($position)->figure->value - $handA->cardAt($position)->figure->value;
             if (0 !== $comparison) {
-                $this->position = $position;
+                $winningHand = match (true) {
+                    0 > $comparison => $handA,
+                    0 < $comparison => $handB,
+                };
+                $this->registerWinner($winningHand, $winningHand->cardAt($position));
             }
             return $comparison;
         };
+    }
+
+    public function registerWinner(Hand $winningHand, Card $winningCard): void
+    {
+        $this->winningHand = $winningHand;
+        $this->winningCard = $winningCard;
     }
 }

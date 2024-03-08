@@ -17,7 +17,8 @@ class HandParser
         $hands = [];
         foreach ($separatedHandInputs as $handInput) {
             [$player, $cardsInput] = explode(': ', $handInput);
-            $hands[$player] = new Hand(
+            $hands[] = new Hand(
+                $player,
                 ...map(
                     fn(string $cardString) => new Card(
                         match ($cardString[0]) {
