@@ -2,6 +2,37 @@
 
 describe('comparing hands', function () {
     describe(
+        'given a hand with four of a kind',
+        function () {
+            it(
+                'should declare winner the hand with the highest four of a kind',
+                function ($expectedResult, $inputHands) {
+                    $result = $this->pokerHands->whoWins($inputHands);
+
+                    expect($result)->toBe($expectedResult);
+                }
+            )->with([
+                'left should win over a full house' => [
+                    'Black wins. - with four of a kind: 3',
+                    'Black: 3S 3D 3C 4D 3H  White: QS QD 2C 2D QH',
+                ],
+                'right should win over a full house' => [
+                    'White wins. - with four of a kind: 4',
+                    'Black: QS QD 2C 2D QH  White: 4S 3D 4C 4D 4H',
+                ],
+                'left should win over four of a kind' => [
+                    'Black wins. - with four of a kind: 5',
+                    'Black: 5S 5D 5C 4D 5H  White: 3S 3D 3C 4D 3H',
+                ],
+                'right should win over four of a kind' => [
+                    'White wins. - with four of a kind: 5',
+                    'Black: 3S 3D 3C 4D 3H  White: 5S 5D 5C 4D 5H',
+                ],
+            ]);
+        }
+    );
+
+    describe(
         'given a hand with full house',
         function () {
             it(
