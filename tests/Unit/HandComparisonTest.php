@@ -18,6 +18,10 @@ describe('comparing hands', function () {
                 ],
                 [
                     'White wins. - with three of a kind: 8',
+                    'Black: 2H 2D 9S 9C AD  White: 2C 8H 8S 8C KH',
+                ],
+                [
+                    'White wins. - with three of a kind: 8',
                     'Black: 2H 3D 9S 9C AD  White: 2C 8H 8S 8C KH',
                 ],
                 [
@@ -31,6 +35,53 @@ describe('comparing hands', function () {
                 [
                     'White wins. - with three of a kind: 6',
                     'Black: 2H 3D 5S 5C 5D  White: 6D 6H 6C 9S KH',
+                ],
+            ]);
+        }
+    );
+
+    describe(
+        'given a hand with two pairs',
+        function () {
+            it(
+                'should declare winner the hand with the highest two pairs',
+                function ($expectedResult, $inputHands) {
+                    $result = $this->pokerHands->whoWins($inputHands);
+
+                    expect($result)->toBe($expectedResult);
+                }
+            )->with([
+                'left should win over highest card hands' => [
+                    'Black wins. - with two pairs: 8 over 2',
+                    'Black: 2C 2H 8S 8C KH  White: 2H 3D 5S 9C AD',
+                ],
+                'right should win over highest card hands' => [
+                    'White wins. - with two pairs: 8 over 2',
+                    'Black: 2H 3D 5S 9C AD  White: 2C 2H 8S 8C KH',
+                ],
+                'left should win over a pair' => [
+                    'Black wins. - with two pairs: 8 over 2',
+                    'Black: 2C 2H 8S 8C KH  White: 2H 3D 9S 9C AD',
+                ],
+                'right should win over a pair' => [
+                    'White wins. - with two pairs: 8 over 2',
+                    'Black: 2H 3D 9S 9C AD  White: 2C 2H 8S 8C KH',
+                ],
+                'left should win over two pairs with lower 1st pair' => [
+                    'Black wins. - with two pairs: 5 over 2',
+                    'Black: 2H 2D 5S 5C KD  White: 3C 3H 4S 4C QH',
+                ],
+                'right should win over two pairs with lower 1st pair' => [
+                    'White wins. - with two pairs: 5 over 2',
+                    'Black: 3C 3H 4S 4C QH  White: 2H 2D 5S 5C KD',
+                ],
+                'left should win over two pairs with lower 2nd pair' => [
+                    'Black wins. - with two pairs: 9 over 3',
+                    'Black: 3H 3D 9S 9C QD  White: 2C 2H 9S 9C KH',
+                ],
+                'right should win over two pairs with lower 2nd pair' => [
+                    'White wins. - with two pairs: 9 over 3',
+                    'Black: 3C 3H 9S 9C KH  White: 2H 2D 9S 9C QD',
                 ],
             ]);
         }
