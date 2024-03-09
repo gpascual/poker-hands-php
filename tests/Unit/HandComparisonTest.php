@@ -2,6 +2,45 @@
 
 describe('comparing hands', function () {
     describe(
+        'given a hand with full house',
+        function () {
+            it(
+                'should declare winner the hand with the highest full house',
+                function ($expectedResult, $inputHands) {
+                    $result = $this->pokerHands->whoWins($inputHands);
+
+                    expect($result)->toBe($expectedResult);
+                }
+            )->with([
+                'left should win over a flush' => [
+                    'Black wins. - with full house: 3 over 4',
+                    'Black: 3S 3D 4C 4D 3H  White: 2H 3H 5H 9H JH',
+                ],
+                'right should win over a flush' => [
+                    'White wins. - with full house: Queen over 2',
+                    'Black: 2H 3H 5H 9H JH  White: QS QD 2C 2D QH',
+                ],
+                'left should win over a full house with lower three of a kind' => [
+                    'Black wins. - with full house: 9 over 4',
+                    'Black: 9S 9D 4C 4D 9H  White: 2C 5H 5D 2D 2H',
+                ],
+                'right should win over a full house with lower three of a kind' => [
+                    'White wins. - with full house: 9 over 4',
+                    'Black: 2C 5H 5D 2D 2H  White: 9S 9D 4C 4D 9H',
+                ],
+                'left should win over a full house with lower pair' => [
+                    'Black wins. - with full house: 5 over 4',
+                    'Black: 5S 5D 4C 4D 5H  White: 2C 5H 5D 2D 2H',
+                ],
+                'right should win over a full house with lower pair' => [
+                    'White wins. - with full house: 5 over 4',
+                    'Black: 2C 5H 5D 2D 2H  White: 5S 5D 4C 4D 5H',
+                ],
+            ]);
+        }
+    );
+
+    describe(
         'given a hand with flush',
         function () {
             it(
@@ -31,6 +70,7 @@ describe('comparing hands', function () {
             ]);
         }
     );
+
     describe(
         'given a hand with straight',
         function () {
