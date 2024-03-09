@@ -3,6 +3,7 @@
 namespace PokerHands;
 
 use SplObjectStorage;
+
 use function Lambdish\Phunctional\filter;
 use function Lambdish\Phunctional\map;
 use function Lambdish\Phunctional\reduce;
@@ -50,15 +51,30 @@ class Hand
 
         $ranks = new SplObjectStorage();
         $ranks[HandRank::Card] = map(fn (Card $card) => [$card], $cards);
-        $ranks[HandRank::Pair] = array_values(filter(
+        $pairs = array_values(filter(
             fn(array $group) => 2 === count($group),
             $groupedCards
         ));
+        $ranks[match (count($pairs)) {
+            2 => HandRank::TwoPairs,
+            default => HandRank::Pair
+        }] = $pairs;
         $ranks[HandRank::ThreeOfAKind] = array_values(filter(
             fn(array $group) => 3 === count($group),
             $groupedCards
         ));
 
         return $ranks;
+    }
+
+    /**
+     * @return Figure[]
+     */
+    public function rankFigures(HandRank $handRank): array
+    {
+        return map(
+            fn ($card) => $card->figure,
+            map(fn($cards) => current($cards), $this->cardsByRank[$handRank] ?? [])
+        );
     }
 }

@@ -81,7 +81,7 @@ describe('comparing hands', function () {
                 ],
                 'right should win over two pairs with lower 2nd pair' => [
                     'White wins. - with two pairs: 9 over 3',
-                    'Black: 3C 3H 9S 9C KH  White: 2H 2D 9S 9C QD',
+                    'Black: 2H 2D 9S 9C QD  White: 3C 3H 9S 9C KH',
                 ],
             ]);
         }
