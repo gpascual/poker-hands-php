@@ -96,6 +96,15 @@ class Hand
             $ranks[HandRank::Flush] = [$cards];
         }
 
+        if (!empty($ranks[HandRank::ThreeOfAKind]) && !empty($ranks[HandRank::Pair])) {
+            $ranks[HandRank::FullHouse] = [
+               $ranks[HandRank::ThreeOfAKind][0],
+               $ranks[HandRank::Pair][0],
+            ];
+
+            unset($ranks[HandRank::ThreeOfAKind], $ranks[HandRank::Pair]);
+        }
+
         return $ranks;
     }
 

@@ -10,4 +10,5 @@ enum HandRank
     case Pair;
     case Card;
     case Flush;
+    case FullHouse;
 }

@@ -24,6 +24,11 @@ class PokerHands
         sort(
             composeComparators(
                 composeComparators(
+                    $this->compareRanksAt(HandRank::FullHouse),
+                    $this->compareRankFiguresAt(HandRank::FullHouse, 0),
+                    $this->compareRankFiguresAt(HandRank::FullHouse, 1),
+                ),
+                composeComparators(
                     $this->compareRanksAt(HandRank::Flush),
                     ignoreComparatorIf(
                         function (Hand $handA, Hand $handB) {
@@ -104,7 +109,7 @@ class PokerHands
     {
         return captureComparisonResult(
             match ($handRank) {
-                HandRank::TwoPairs => function (Hand $handA, Hand $handB) use ($handRank) {
+                HandRank::TwoPairs, HandRank::FullHouse => function (Hand $handA, Hand $handB) use ($handRank) {
                     $figures = array_map(
                         null,
                         $handA->rankFigures($handRank),
@@ -142,7 +147,7 @@ class PokerHands
             return;
         }
 
-        if (in_array($handRank, [HandRank::TwoPairs, HandRank::Straight], true)) {
+        if (in_array($handRank, [HandRank::TwoPairs, HandRank::Straight, HandRank::FullHouse], true)) {
             $this->registerWinner($higherHand, $handRank, $higherHand->rankFigures($handRank));
             return;
         }
