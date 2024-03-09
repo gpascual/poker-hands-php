@@ -2,6 +2,37 @@
 
 describe('comparing hands', function () {
     describe(
+        'given a hand with straight flush',
+        function () {
+            it(
+                'should declare winner the hand with the highest flush',
+                function ($expectedResult, $inputHands) {
+                    $result = $this->pokerHands->whoWins($inputHands);
+
+                    expect($result)->toBe($expectedResult);
+                }
+            )->with([
+                'left should win over a four of a kind' => [
+                    'Black wins. - with straight flush: 6 over 2',
+                    'Black: 2H 3H 5H 4H 6H  White: 7C 4H 7S 7C 7H',
+                ],
+                'right should win over a four of a kind' => [
+                    'White wins. - with straight flush: 9 over 5',
+                    'Black: 6C 4H 5S 8C 7H  White: 7S 6S 5S 9S 8S',
+                ],
+                'left should win over a straight flush with lower figures' => [
+                    'Black wins. - with straight flush: 9 over 5',
+                    'Black: 7S 6S 5S 9S 8S  White: 2H 3H 5H 4H 6H',
+                ],
+                'right should win over a straight flush with lower figures' => [
+                    'White wins. - with straight flush: 9 over 5',
+                    'Black: 2H 3H 5H 4H 6H  White: 7S 6S 5S 9S 8S',
+                ],
+            ]);
+        }
+    );
+
+    describe(
         'given a hand with four of a kind',
         function () {
             it(
