@@ -21,6 +21,10 @@ class PokerHands
 
     public function whoWins(string $line): string
     {
+        $this->winningFigures = [];
+        $this->winningHand = null;
+        $this->winningRank = null;
+
         sort(
             composeComparators(
                 composeComparators(
