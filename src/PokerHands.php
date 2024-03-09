@@ -2,12 +2,12 @@
 
 namespace PokerHands;
 
-use function Lambdish\Phunctional\sort;
+use PokerHands\Rules\RulingsFactory;
 
+use function Lambdish\Phunctional\sort;
 
 class PokerHands
 {
-
     public function whoWins(string $line): string
     {
         $winnerRegistry = new WinnerRegistry();
@@ -15,7 +15,7 @@ class PokerHands
 
         sort(
             $rulings->handRanksComparator(),
-            (new HandParser())->parseHandsInput($line)
+            (new HandParser($rulings))->parseHandsInput($line)
         );
 
         return new WinnerResponse($winnerRegistry);

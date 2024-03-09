@@ -2,10 +2,19 @@
 
 namespace PokerHands;
 
+use PokerHands\Rules\Rulings;
+
 use function Lambdish\Phunctional\map;
 
 class HandParser
 {
+    private Rulings $rulings;
+
+    public function __construct(Rulings $rulings)
+    {
+        $this->rulings = $rulings;
+    }
+
     /**
      * @param string $input
      * @return Hand[]
@@ -17,9 +26,9 @@ class HandParser
         $hands = [];
         foreach ($separatedHandInputs as $handInput) {
             [$player, $cardsInput] = explode(': ', $handInput);
-            $hands[] = new Hand(
+            $hands[] = $this->rulings->createHand(
                 $player,
-                ...map(
+                map(
                     fn(string $cardString) => new Card(
                         match ($cardString[0]) {
                             'J' => Figure::Jack,

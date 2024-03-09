@@ -4,7 +4,9 @@
       "PokerHands\\": "src/"
     },
     "files": [
-      "src/Functional/autoload.php"
+      "src/Functional/autoload.php",
+      "src/Rules/HandsComparison/autoload.php",
+      "src/Rules/RankCardGroups/autoload.php"
     ]
   },
   "autoload-dev": {
