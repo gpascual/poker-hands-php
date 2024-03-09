@@ -17,6 +17,10 @@ class PokerHands
         sort(
             composeComparators(
                 composeComparators(
+                    $this->compareRanksAt(HandRank::ThreeOfAKind, 0),
+                    $this->compareRankFiguresAt(HandRank::ThreeOfAKind, 0)
+                ),
+                composeComparators(
                     $this->compareRanksAt(HandRank::Pair, 0),
                     $this->compareRankFiguresAt(HandRank::Pair, 0)
                 ),
@@ -88,6 +92,7 @@ class PokerHands
     public function cardRank(HandRank $handRank): string
     {
         return match ($handRank) {
+            HandRank::ThreeOfAKind => 'three of a kind',
             HandRank::Pair => 'pair',
             default => "high card"
         };

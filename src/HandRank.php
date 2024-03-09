@@ -6,4 +6,5 @@ enum HandRank
 {
     case Pair;
     case Card;
+    case ThreeOfAKind;
 }

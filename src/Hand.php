@@ -54,6 +54,10 @@ class Hand
             fn(array $group) => 2 === count($group),
             $groupedCards
         ));
+        $ranks[HandRank::ThreeOfAKind] = array_values(filter(
+            fn(array $group) => 3 === count($group),
+            $groupedCards
+        ));
 
         return $ranks;
     }
