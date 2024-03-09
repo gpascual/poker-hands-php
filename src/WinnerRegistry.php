@@ -41,7 +41,13 @@ class WinnerRegistry
             return;
         }
 
-        if (in_array($handRank, [HandRank::TwoPairs, HandRank::Straight, HandRank::FullHouse], true)) {
+        if (
+            in_array(
+                $handRank,
+                [HandRank::TwoPairs, HandRank::Straight, HandRank::FullHouse, HandRank::StraightFlush],
+                true
+            )
+        ) {
             $this->registerWinner($higherHand, $handRank, $higherHand->rankFigures($handRank));
             return;
         }

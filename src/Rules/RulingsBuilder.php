@@ -5,6 +5,9 @@ namespace PokerHands\Rules;
 use PokerHands\HandRank;
 use PokerHands\WinnerRegistry;
 
+use function PokerHands\Functional\composeComparators;
+use function PokerHands\Rules\HandComparison\compareRankFiguresAt;
+use function PokerHands\Rules\HandComparison\compareRanksAt;
 use function PokerHands\Rules\HandComparison\flushHandComparator;
 use function PokerHands\Rules\HandComparison\fourOfAKindComparator;
 use function PokerHands\Rules\HandComparison\fullHouseHandComparator;
@@ -31,6 +34,28 @@ class RulingsBuilder
     {
         $this->rankComparators = [];
         $this->rankCardGroupBuilders = new \SplObjectStorage();
+    }
+
+    public function addStraightFlushRules(WinnerRegistry $winnerRegistry): self
+    {
+        return $this
+            ->addRankComparator(composeComparators(
+                compareRanksAt($winnerRegistry, HandRank::StraightFlush),
+                compareRankFiguresAt($winnerRegistry, HandRank::StraightFlush, 0)
+            ))
+            ->addCardsRankGroupBuilder(
+                HandRank::StraightFlush,
+                function (array $cards) {
+                    $straightRanks = computeStraightCardRanks($cards);
+                    $flushRanks = computeFlushCardRanks($cards);
+
+                    if ($flushRanks && $straightRanks) {
+                        return $straightRanks;
+                    }
+
+                    return [];
+                }
+            );
     }
 
     public function addFourOfAKindRules(WinnerRegistry $winnerRegistry): self

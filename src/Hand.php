@@ -31,7 +31,7 @@ class Hand
             return [];
         }
 
-        if ($handRank === HandRank::Straight) {
+        if (in_array($handRank, [HandRank::Straight, HandRank::StraightFlush], true)) {
             $cards = current($this->cardsByRank[$handRank]);
             $cards = [$cards[0], $cards[4]];
             return map(fn($card) => $card->figure, $cards);
