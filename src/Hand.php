@@ -86,6 +86,16 @@ class Hand
             $ranks[HandRank::Straight] = [$straight];
         }
 
+        $isFlush = 1 === count(
+            array_unique(
+                map(fn(Card $card) => $card->suit->value, $cards)
+            )
+        );
+
+        if ($isFlush) {
+            $ranks[HandRank::Flush] = [$cards];
+        }
+
         return $ranks;
     }
 
@@ -108,5 +118,17 @@ class Hand
             fn($card) => $card->figure,
             map(fn($cards) => current($cards), $this->cardsByRank[$handRank])
         );
+    }
+
+    /**
+     * @return Card[]
+     */
+    public function rankCardsAt(HandRank $handRank, int $position): array
+    {
+        if (empty($this->cardsByRank[$handRank])) {
+            return [];
+        }
+
+        return $this->cardsByRank[$handRank][$position];
     }
 }

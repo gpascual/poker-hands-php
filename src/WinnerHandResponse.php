@@ -21,12 +21,16 @@ class WinnerHandResponse
     {
         $playerName = $this->winningHand->playerName;
         $cardRank = $this->composeCardRank($this->winningRank);
-        $cardFigures = $this->composeFigures($this->winningFigures);
+        $cardFigures = $this->composeReason($this->winningRank, $this->winningFigures);
         return "{$playerName} wins. - with {$cardRank}: {$cardFigures}";
     }
 
-    private function composeFigures(array $figures): string
+    private function composeReason(HandRank $handRank, array $figures): string
     {
+        if ($handRank === HandRank::Flush) {
+            return current($this->winningHand->rankCardsAt($handRank, 0))->suit->name;
+        }
+
         return implode(
             ' over ',
             map(
@@ -45,6 +49,7 @@ class WinnerHandResponse
     private function composeCardRank(HandRank $handRank): string
     {
         return match ($handRank) {
+            HandRank::Flush => 'flush',
             HandRank::Straight => 'straight',
             HandRank::ThreeOfAKind => 'three of a kind',
             HandRank::TwoPairs => 'two pairs',

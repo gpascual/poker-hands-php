@@ -9,4 +9,5 @@ enum HandRank
     case TwoPairs;
     case Pair;
     case Card;
+    case Flush;
 }

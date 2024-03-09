@@ -6,6 +6,13 @@ use function Lambdish\Phunctional\partial;
 use function Lambdish\Phunctional\sort;
 use function PokerHands\Functional\composeComparators;
 
+function ignoreComparatorIf(callable $ignoreConditionCallback, callable $composeComparators): callable
+{
+    return static fn(...$comparisonItems) => $ignoreConditionCallback(...$comparisonItems)
+        ? 0
+        : $composeComparators(...$comparisonItems);
+}
+
 class PokerHands
 {
     private array $winningFigures = [];
@@ -16,6 +23,23 @@ class PokerHands
     {
         sort(
             composeComparators(
+                composeComparators(
+                    $this->compareRanksAt(HandRank::Flush),
+                    ignoreComparatorIf(
+                        function (Hand $handA, Hand $handB) {
+                            return
+                                empty($handA->rankFigures(HandRank::Flush))
+                                || empty($handB->rankFigures(HandRank::Flush));
+                        },
+                        composeComparators(
+                            $this->compareRankFiguresAt(HandRank::Card, 0),
+                            $this->compareRankFiguresAt(HandRank::Card, 1),
+                            $this->compareRankFiguresAt(HandRank::Card, 2),
+                            $this->compareRankFiguresAt(HandRank::Card, 3),
+                            $this->compareRankFiguresAt(HandRank::Card, 4)
+                        )
+                    )
+                ),
                 composeComparators(
                     $this->compareRanksAt(HandRank::Straight),
                     $this->compareRankFiguresAt(HandRank::Straight, 0)
