@@ -2,10 +2,9 @@
 
 use PokerHands\Card;
 use PokerHands\Figure;
-use PokerHands\Hand;
-use PokerHands\HandParser;
 use PokerHands\Rules\RulingsFactory;
 use PokerHands\Suit;
+use PokerHands\UserInterface\HandParser;
 use PokerHands\WinnerRegistry;
 
 describe(

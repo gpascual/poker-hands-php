@@ -1,8 +1,12 @@
 <?php
 
-namespace PokerHands;
+namespace PokerHands\UserInterface;
 
+use PokerHands\Card;
+use PokerHands\Figure;
+use PokerHands\Hand;
 use PokerHands\Rules\Rulings;
+use PokerHands\Suit;
 
 use function Lambdish\Phunctional\map;
 

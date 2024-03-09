@@ -1,6 +1,10 @@
 <?php
 
-namespace PokerHands;
+namespace PokerHands\UserInterface;
+
+use PokerHands\Figure;
+use PokerHands\HandRank;
+use PokerHands\WinnerRegistry;
 
 use function Lambdish\Phunctional\map;
 

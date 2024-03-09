@@ -3,6 +3,8 @@
 namespace PokerHands;
 
 use PokerHands\Rules\RulingsFactory;
+use PokerHands\UserInterface\HandParser;
+use PokerHands\UserInterface\WinnerResponse;
 
 use function Lambdish\Phunctional\sort;
 
