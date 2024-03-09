@@ -1,5 +1,7 @@
 <?php
 
+namespace PokerHands\Functional;
+
 function captureComparisonResult(callable $comparator, callable $captureCallback): callable
 {
     return static function (mixed $elementA, mixed $elementB) use ($comparator, $captureCallback) {

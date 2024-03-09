@@ -4,31 +4,34 @@ namespace PokerHands;
 
 use function Lambdish\Phunctional\map;
 
-class WinnerHandResponse
+class WinnerResponse
 {
-    private Hand $winningHand;
-    private HandRank $winningRank;
-    private array $winningFigures;
+    private WinnerRegistry $winnerRegistry;
 
-    public function __construct(Hand $winningHand, HandRank $highestRank, array $highestFigures)
+    public function __construct(WinnerRegistry $winnerRegistry)
     {
-        $this->winningHand = $winningHand;
-        $this->winningRank = $highestRank;
-        $this->winningFigures = $highestFigures;
+        $this->winnerRegistry = $winnerRegistry;
     }
 
     public function __toString(): string
     {
-        $playerName = $this->winningHand->playerName;
-        $cardRank = $this->composeCardRank($this->winningRank);
-        $cardFigures = $this->composeReason($this->winningRank, $this->winningFigures);
+        if (null === $this->winnerRegistry->getWinningHand()) {
+            return 'Tie.';
+        }
+
+        $playerName = $this->winnerRegistry->getWinningHand()->playerName;
+        $cardRank = $this->composeCardRank($this->winnerRegistry->getWinningRank());
+        $cardFigures = $this->composeReason(
+            $this->winnerRegistry->getWinningRank(),
+            $this->winnerRegistry->getWinningFigures()
+        );
         return "{$playerName} wins. - with {$cardRank}: {$cardFigures}";
     }
 
     private function composeReason(HandRank $handRank, array $figures): string
     {
         if ($handRank === HandRank::Flush) {
-            return current($this->winningHand->rankCardsAt($handRank, 0))->suit->name;
+            return current($this->winnerRegistry->getWinningHand()->rankCardsAt($handRank, 0))->suit->name;
         }
 
         return implode(

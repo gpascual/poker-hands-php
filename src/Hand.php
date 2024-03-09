@@ -55,10 +55,10 @@ class Hand
             fn(array $group) => 2 === count($group),
             $groupedCards
         ));
-        $ranks[match (count($pairs)) {
-            2 => HandRank::TwoPairs,
-            default => HandRank::Pair
-        }] = $pairs;
+        $ranks[HandRank::Pair] = $pairs;
+        if (2 === count($pairs)) {
+            $ranks[HandRank::TwoPairs] = $pairs;
+        }
         $ranks[HandRank::ThreeOfAKind] = array_values(filter(
             fn(array $group) => 3 === count($group),
             $groupedCards
@@ -101,8 +101,6 @@ class Hand
                $ranks[HandRank::ThreeOfAKind][0],
                $ranks[HandRank::Pair][0],
             ];
-
-            unset($ranks[HandRank::ThreeOfAKind], $ranks[HandRank::Pair]);
         }
 
         return $ranks;
