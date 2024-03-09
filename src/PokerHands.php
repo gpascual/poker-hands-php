@@ -2,7 +2,6 @@
 
 namespace PokerHands;
 
-use function Lambdish\Phunctional\map;
 use function Lambdish\Phunctional\partial;
 use function Lambdish\Phunctional\sort;
 use function PokerHands\Functional\composeComparators;
@@ -18,15 +17,15 @@ class PokerHands
         sort(
             composeComparators(
                 composeComparators(
-                    $this->compareRanksAt(HandRank::ThreeOfAKind, 0),
+                    $this->compareRanksAt(HandRank::ThreeOfAKind),
                     $this->compareRankFiguresAt(HandRank::ThreeOfAKind, 0)
                 ),
                 composeComparators(
-                    $this->compareRanksAt(HandRank::TwoPairs, 0),
+                    $this->compareRanksAt(HandRank::TwoPairs),
                     $this->compareRankFiguresAt(HandRank::TwoPairs, 0)
                 ),
                 composeComparators(
-                    $this->compareRanksAt(HandRank::Pair, 0),
+                    $this->compareRanksAt(HandRank::Pair),
                     $this->compareRankFiguresAt(HandRank::Pair, 0)
                 ),
                 $this->compareRankFiguresAt(HandRank::Card, 0),
@@ -41,11 +40,8 @@ class PokerHands
         if (null === $this->winningHand) {
             return 'Tie.';
         }
-        return $this->composeWinningPlayerResponse(
-            $this->winningHand->playerName,
-            $this->winningRank,
-            $this->winningFigures
-        );
+
+        return new WinnerHandResponse($this->winningHand, $this->winningRank, $this->winningFigures);
     }
 
     public function registerWinner(Hand $winningHand, HandRank $winningRank, array $winningFigures): void
@@ -55,12 +51,12 @@ class PokerHands
         $this->winningFigures = $winningFigures;
     }
 
-    private function compareRanksAt(HandRank $handRank, int $position): callable
+    private function compareRanksAt(HandRank $handRank): callable
     {
         return captureComparisonResult(
-            function (Hand $handA, Hand $handB) use ($handRank, $position) {
-                $figureA = $handA->figureAt($handRank, $position);
-                $figureB = $handB->figureAt($handRank, $position);
+            function (Hand $handA, Hand $handB) use ($handRank) {
+                $figureA = $handA->figureAt($handRank, 0);
+                $figureB = $handB->figureAt($handRank, 0);
 
                 if ($figureA && null === $figureB) {
                     return -1;
@@ -72,15 +68,15 @@ class PokerHands
 
                 return 0;
             },
-            partial($this->captureHandComparisonResult(...), $handRank, $position)
+            partial($this->captureHandComparisonResult(...), $handRank, 0)
         );
     }
 
     private function compareRankFiguresAt(HandRank $handRank, int $position): callable
     {
         return captureComparisonResult(
-            function (Hand $handA, Hand $handB) use ($handRank, $position) {
-                if (HandRank::TwoPairs === $handRank) {
+            match ($handRank) {
+                HandRank::TwoPairs => function (Hand $handA, Hand $handB) use ($handRank) {
                     $figures = array_map(
                         null,
                         $handA->rankFigures($handRank),
@@ -96,46 +92,14 @@ class PokerHands
                     }
 
                     return 0;
+                },
+                default => function (Hand $handA, Hand $handB) use ($handRank, $position) {
+                    $figureB = $handB->figureAt($handRank, $position);
+                    $figureA = $handA->figureAt($handRank, $position);
+                    return $figureB->value <=> $figureA->value;
                 }
-
-                $figureB = $handB->figureAt($handRank, $position);
-                $figureA = $handA->figureAt($handRank, $position);
-                return $figureB->value <=> $figureA->value;
             },
             partial($this->captureHandComparisonResult(...), $handRank, $position)
-        );
-    }
-
-    public function composeWinningPlayerResponse(string $player, HandRank $highestRank, array $highestFigures): string
-    {
-
-        return "$player wins. - with {$this->cardRank($highestRank)}: {$this->cardFigure($highestFigures)}";
-    }
-
-    public function cardRank(HandRank $handRank): string
-    {
-        return match ($handRank) {
-            HandRank::ThreeOfAKind => 'three of a kind',
-            HandRank::TwoPairs => 'two pairs',
-            HandRank::Pair => 'pair',
-            default => "high card"
-        };
-    }
-
-    private function cardFigure(array $figures): string
-    {
-        return implode(
-            ' over ',
-            map(
-                fn(Figure $figure) => match ($figure) {
-                    Figure::Jack => 'Jack',
-                    Figure::Queen => 'Queen',
-                    Figure::King => 'King',
-                    Figure::Ace => 'Ace',
-                    default => $figure->value
-                },
-                $figures
-            )
         );
     }
 

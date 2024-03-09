@@ -2,6 +2,61 @@
 
 describe('comparing hands', function () {
     describe(
+        'given a hand with straight',
+        function () {
+            it(
+                'should declare winner the hand with the highest straight',
+                function ($expectedResult, $inputHands) {
+                    $result = $this->pokerHands->whoWins($inputHands);
+
+                    expect($result)->toBe($expectedResult);
+                }
+            )->with([
+                'left should win over highest card hands' => [
+                    'Black wins. - with straight: 8 over 4',
+                    'Black: 6C 4H 5S 8C 7H  White: 2H 3D 5S 9C AD',
+                ],
+                'right should win over highest card hands' => [
+                    'White wins. - with straight: 8 over 4',
+                    'Black: 2C 2H 8S 8C KH  White: 6C 4H 5S 8C 7H',
+                ],
+                'left should win over a pair' => [
+                    'Black wins. - with straight: 8 over 4',
+                    'Black: 6C 4H 5S 8C 7H  White: 2H 3D 9S 9C AD',
+                ],
+                'right should win over a pair' => [
+                    'White wins. - with straight: 8 over 4',
+                    'Black: 2H 3D 9S 9C AD  White: 6C 4H 5S 8C 7H',
+                ],
+                'left should win over two pairs' => [
+                    'Black wins. - with straight: 8 over 4',
+                    'Black: 6C 4H 5S 8C 7H  White: 3C 3H 4S 4C QH',
+                ],
+                'right should win over two pairs' => [
+                    'White wins. - with straight: 8 over 4',
+                    'Black: 3C 3H 4S 4C QH  White: 6C 4H 5S 8C 7H',
+                ],
+                'left should win over three of a kind' => [
+                    'Black wins. - with straight: 8 over 4',
+                    'Black: 6C 4H 5S 8C 7H  White: 2C 9H 9S 9C KH',
+                ],
+                'right should win over three of a kind' => [
+                    'White wins. - with straight: 8 over 4',
+                    'Black: 2H 9D 9S 9C QD  White: 6C 4H 5S 8C 7H',
+                ],
+                'left should win over a straight with lower figures' => [
+                    'Black wins. - with straight: 9 over 5',
+                    'Black: 8H 9D 5S 7C 6D  White: 6C 4H 5S 8C 7H',
+                ],
+                'right should win over a straight with lower figures' => [
+                    'White wins. - with straight: 9 over 5',
+                    'Black: 6C 4H 5S 8C 7H  White: 8H 9D 5S 7C 6D',
+                ],
+            ]);
+        }
+    );
+
+    describe(
         'given a hand with three of a kind',
         function () {
             it(
