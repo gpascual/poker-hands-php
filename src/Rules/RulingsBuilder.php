@@ -6,6 +6,7 @@ use PokerHands\HandRank;
 use PokerHands\WinnerRegistry;
 
 use function PokerHands\Rules\HandComparison\flushHandComparator;
+use function PokerHands\Rules\HandComparison\fourOfAKindComparator;
 use function PokerHands\Rules\HandComparison\fullHouseHandComparator;
 use function PokerHands\Rules\HandComparison\highestCardHandComparator;
 use function PokerHands\Rules\HandComparison\pairHandComparator;
@@ -13,6 +14,7 @@ use function PokerHands\Rules\HandComparison\straightHandComparator;
 use function PokerHands\Rules\HandComparison\threeOfAKindHandComparator;
 use function PokerHands\Rules\HandComparison\twoPairsHandComparator;
 use function PokerHands\Rules\RankCardGroups\computeFlushCardRanks;
+use function PokerHands\Rules\RankCardGroups\computeFourOfAKindCardRanks;
 use function PokerHands\Rules\RankCardGroups\computeFullHouseCardRanks;
 use function PokerHands\Rules\RankCardGroups\computeHighestCardRanks;
 use function PokerHands\Rules\RankCardGroups\computePairCardRanks;
@@ -31,6 +33,12 @@ class RulingsBuilder
         $this->rankCardGroupBuilders = new \SplObjectStorage();
     }
 
+    public function addFourOfAKindRules(WinnerRegistry $winnerRegistry): self
+    {
+        return $this
+            ->addRankComparator(fourOfAKindComparator($winnerRegistry))
+            ->addCardsRankGroupBuilder(HandRank::FourOfAKind, computeFourOfAKindCardRanks(...));
+    }
 
     public function addFullHouseRules(WinnerRegistry $winnerRegistry): self
     {

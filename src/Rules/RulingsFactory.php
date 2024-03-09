@@ -9,6 +9,7 @@ class RulingsFactory
     public static function createDefault(WinnerRegistry $winnerRegistry): Rulings
     {
         return (new RulingsBuilder())
+            ->addFourOfAKindRules($winnerRegistry)
             ->addFullHouseRules($winnerRegistry)
             ->addFlushRules($winnerRegistry)
             ->addStraightRules($winnerRegistry)
