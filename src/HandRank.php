@@ -4,6 +4,7 @@ namespace PokerHands;
 
 enum HandRank
 {
+    case Straight;
     case ThreeOfAKind;
     case TwoPairs;
     case Pair;

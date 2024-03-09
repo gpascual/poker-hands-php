@@ -19,7 +19,7 @@ class Hand
     {
         usort(
             $cards,
-            static fn (Card $cardA, Card $cardB) => $cardB->figure->value - $cardA->figure->value
+            static fn(Card $cardA, Card $cardB) => $cardB->figure->value - $cardA->figure->value
         );
 
 
@@ -30,7 +30,7 @@ class Hand
     {
         return current(
             map(
-                fn (Card $card) => $card->figure,
+                fn(Card $card) => $card->figure,
                 $this->cardsByRank[$handRank][$position] ?? []
             )
         ) ?: null;
@@ -50,7 +50,7 @@ class Hand
         krsort($groupedCards);
 
         $ranks = new SplObjectStorage();
-        $ranks[HandRank::Card] = map(fn (Card $card) => [$card], $cards);
+        $ranks[HandRank::Card] = map(fn(Card $card) => [$card], $cards);
         $pairs = array_values(filter(
             fn(array $group) => 2 === count($group),
             $groupedCards
@@ -64,6 +64,28 @@ class Hand
             $groupedCards
         ));
 
+        $straight = reduce(
+            function (array $partialStraight, Card $card) {
+                if (empty($partialStraight)) {
+                    $partialStraight[] = $card;
+                    return $partialStraight;
+                }
+
+                if (end($partialStraight)->figure->value === ($card->figure->value + 1)) {
+                    $partialStraight[] = $card;
+                    return $partialStraight;
+                }
+
+                return $partialStraight;
+            },
+            $cards,
+            []
+        );
+
+        if (5 === count($straight)) {
+            $ranks[HandRank::Straight] = [$straight];
+        }
+
         return $ranks;
     }
 
@@ -72,9 +94,19 @@ class Hand
      */
     public function rankFigures(HandRank $handRank): array
     {
+        if (empty($this->cardsByRank[$handRank])) {
+            return [];
+        }
+
+        if ($handRank === HandRank::Straight) {
+            $cards = current($this->cardsByRank[$handRank]);
+            $cards = [$cards[0], $cards[4]];
+            return map(fn($card) => $card->figure, $cards);
+        }
+
         return map(
-            fn ($card) => $card->figure,
-            map(fn($cards) => current($cards), $this->cardsByRank[$handRank] ?? [])
+            fn($card) => $card->figure,
+            map(fn($cards) => current($cards), $this->cardsByRank[$handRank])
         );
     }
 }

@@ -45,6 +45,7 @@ class WinnerHandResponse
     private function composeCardRank(HandRank $handRank): string
     {
         return match ($handRank) {
+            HandRank::Straight => 'straight',
             HandRank::ThreeOfAKind => 'three of a kind',
             HandRank::TwoPairs => 'two pairs',
             HandRank::Pair => 'pair',

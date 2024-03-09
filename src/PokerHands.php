@@ -17,6 +17,10 @@ class PokerHands
         sort(
             composeComparators(
                 composeComparators(
+                    $this->compareRanksAt(HandRank::Straight),
+                    $this->compareRankFiguresAt(HandRank::Straight, 0)
+                ),
+                composeComparators(
                     $this->compareRanksAt(HandRank::ThreeOfAKind),
                     $this->compareRankFiguresAt(HandRank::ThreeOfAKind, 0)
                 ),
@@ -114,7 +118,7 @@ class PokerHands
             return;
         }
 
-        if ($handRank === HandRank::TwoPairs) {
+        if (in_array($handRank, [HandRank::TwoPairs, HandRank::Straight], true)) {
             $this->registerWinner($higherHand, $handRank, $higherHand->rankFigures($handRank));
             return;
         }
